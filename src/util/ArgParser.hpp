@@ -24,8 +24,10 @@ public:
   // デバッグ用出力
   void debugPrint() const;
 
+  bool isDebugMode() const;
+
 private:
   void parse(int argc, char* argv[]);
 };
 
-}
+} // namespace util

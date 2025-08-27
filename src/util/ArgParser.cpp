@@ -15,7 +15,7 @@ std::string ArgParser::getOption(const std::string& name, const std::string& def
 }
 
 bool ArgParser::hasFlag(const std::string& name) const {
-  return options.count(name) > 0 && options.at(name).empty();
+  return options.count(name) > 0;
 }
 
 const std::vector<std::string>& ArgParser::getArgs() const {
@@ -71,4 +71,7 @@ void ArgParser::parse(int argc, char* argv[]) {
   }
 }
 
+bool ArgParser::isDebugMode() const {
+  return hasFlag("debug") || hasFlag("d");
 }
+} // namespace util

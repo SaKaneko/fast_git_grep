@@ -4,20 +4,24 @@
 
 class Config {
 private:
-  std::string pattern;
-  std::vector<std::string> excludeBranches;
+  std::string strategy;
+  std::vector<std::string> excludeBranchPatterns;
+  std::vector<std::string> excludeProjectPatterns;
   std::string branchSelectorType;
   std::vector<std::string> projects;
 
 public:
-  Config(std::string pattern, std::vector<std::string> excludeBranches, std::string branchSelectorType,
+  Config(std::string strategy, std::vector<std::string> excludeBranchPatterns,
+         std::vector<std::string> excludeProjectPatterns, std::string branchSelectorType,
          std::vector<std::string> projects)
-      : pattern(std::move(pattern)), excludeBranches(std::move(excludeBranches)),
-        branchSelectorType(std::move(branchSelectorType)), projects(std::move(projects)) {}
+      : strategy(std::move(strategy)), excludeBranchPatterns(std::move(excludeBranchPatterns)),
+        excludeProjectPatterns(std::move(excludeProjectPatterns)), branchSelectorType(std::move(branchSelectorType)),
+        projects(std::move(projects)) {}
   Config() {}
 
-  const std::string& getPattern() const;
-  const std::vector<std::string>& getExcludeBranches() const;
+  const std::string& getStrategy() const;
+  const std::vector<std::string>& getExcludeBranchPatterns() const;
+  const std::vector<std::string>& getExcludeProjectPatterns() const;
   const std::string& getBranchSelectorType() const;
   const std::vector<std::string>& getProjects() const;
 };

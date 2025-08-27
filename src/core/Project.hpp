@@ -4,10 +4,11 @@
 
 class Project {
 private:
-  std::string path;
+  std::vector<std::string> target_branches;
 
 public:
-  std::vector<std::string> getBranches() const;
-  std::string getLatestBranch() const;
-  std::string getMainBranch() const;
+  std::string path;
+  std::string name;
+  void setTargetBranches(const std::vector<std::string>& branches);
+  std::vector<std::string> getTargetBranches() const;
 };

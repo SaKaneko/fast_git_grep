@@ -1,11 +1,9 @@
 #include "core/Project.hpp"
 
-std::vector<std::string> Project::getBranches() const {
-  return {};
+void Project::setTargetBranches(const std::vector<std::string>& branches) {
+  target_branches = branches;
 }
-std::string Project::getLatestBranch() const {
-  return "";
-}
-std::string Project::getMainBranch() const {
-  return "main";
+
+std::vector<std::string> Project::getTargetBranches() const {
+  return target_branches;
 }

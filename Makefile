@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -O2 -Isrc
+CXXFLAGS = -std=c++17 -Wall -O2 -Isrc -lsqlite3
 SRCDIRS = src/core src/config src/util src
 OBJDIR = obj
 TARGET = fast_git_grep
