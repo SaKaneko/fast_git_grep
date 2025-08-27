@@ -1,0 +1,47 @@
+
+@startuml
+' Gitリポジトリ内の全ファイルから特定文字列を検索するプログラムのクラス図
+
+class RepositoryScanner {
+    - rootPath: std::string
+    + scanAllRepositories(pattern: std::string, branchSelector: BranchSelector, excludeBranches: std::vector<std::string>): std::vector<SearchResult>
+}
+
+class Project {
+    - path: std::string
+    + getBranches(): std::vector<std::string>
+    + getLatestBranch(): std::string
+    + getMainBranch(): std::string
+}
+
+'' ファイル単位のクラスは不要なため削除
+
+class SearchResult {
+    - filePath: std::string
+    - lineContent: std::string
+    - branch: std::string
+    + getFilePath(): std::string
+    + getLineContent(): std::string
+    + getBranch(): std::string
+}
+class GitGrepExecutor {
+    + grep(pattern: std::string, branch: std::string, excludeBranches: std::vector<std::string>): std::vector<SearchResult>
+}
+
+class ParallelSearchManager {
+    + runParallelSearch(projects: std::vector<Project>, pattern: std::string, branchSelector: BranchSelector, excludeBranches: std::vector<std::string>): std::vector<SearchResult>
+}
+
+class BranchSelector {
+    + selectBranch(project: Project): std::string
+}
+
+RepositoryScanner "1" -- "*" Project : scans
+RepositoryScanner "1" -- "1" ParallelSearchManager : uses
+ParallelSearchManager "1" -- "*" Project : manages
+ParallelSearchManager "1" -- "1" GitGrepExecutor : uses
+ParallelSearchManager "1" -- "1" BranchSelector : uses
+GitGrepExecutor "1" -- "*" SearchResult : returns
+Project "1" -- "*" SearchResult : has
+BranchSelector <|.. RepositoryScanner
+@enduml
