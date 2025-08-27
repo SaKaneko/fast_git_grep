@@ -1,9 +1,12 @@
 #pragma once
 #include <string>
 #include <set>
+#include <vector>
 
 namespace config {
-bool debug = false;
+extern bool debug;
+extern std::vector<std::string> excluded_project_patterns;
+extern std::vector<std::string> excluded_branch_patterns;
 
 constexpr const char* APP_NAME = "fast_git_grep";
 

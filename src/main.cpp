@@ -9,6 +9,8 @@
 
 #include "core/RepositoryScanner.hpp"
 #include "core/ProjectFactory.hpp"
+#include "core/BranchSelector/BranchSelectorFactory.hpp"
+#include "core/ParallelSearchManager.hpp"
 
 int main(int argc, char* argv[]) {
   util::ArgParser argParser(argc, argv);
@@ -37,5 +39,25 @@ int main(int argc, char* argv[]) {
     }
     projects.push_back(projectFactory.createProjectFromDB(repo));
   }
+  auto branch_selector = BranchSelectorFactory::create("all");
+  for (auto& project : projects) {
+    branch_selector->selectBranch(project);
+    if (config::debug) {
+      std::cout << "Project: " << project.name << ", Path: " << project.path << std::endl;
+      auto branches = project.getTargetBranches();
+      std::cout << "  Target branches: ";
+      for (const auto& branch : branches) {
+        std::cout << branch << " ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
+  ParallelSearchManager search_manager;
+  auto results = search_manager.runParallelSearch(projects, "Getting started");
+  for (const auto& res : results) {
+    std::cout << res.toString();
+  }
+
   return 0;
 }

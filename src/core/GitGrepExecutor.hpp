@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "core/SearchResult.hpp"
+#include "core/Project.hpp"
+#include "core/GrepResult.hpp"
 
 class GitGrepExecutor {
 public:
-  std::vector<SearchResult> grep(const std::string& pattern, const std::string& branch,
-                                 const std::vector<std::string>& excludeBranches);
+  std::vector<GrepResult> grep(const Project& project, const std::string& pattern);
 };

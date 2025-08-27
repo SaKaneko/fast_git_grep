@@ -27,8 +27,8 @@ std::vector<fs::path> RepositoryScanner::listBareRepositories(const std::string&
   return repos;
 }
 
-std::vector<SearchResult> RepositoryScanner::scanAllRepositories(const std::string& pattern,
-                                                                 const std::vector<std::string>& excludeBranches) {
+std::vector<GrepResult> RepositoryScanner::scanAllRepositories(const std::string& pattern,
+                                                               const std::vector<std::string>& excludeBranches) {
   // 仮実装
   return {};
 }

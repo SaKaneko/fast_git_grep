@@ -1,10 +1,10 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -O2 -Isrc -lsqlite3
-SRCDIRS = src/core src/config src/util src
+SRCDIRS = src/core/BranchSelector src/core src/config src/util src
 OBJDIR = obj
 TARGET = fast_git_grep
 
-SOURCES := $(foreach dir,$(SRCDIRS),$(wildcard $(dir)/*.cpp))
+SOURCES := $(shell find $(SRCDIR) -name '*.cpp')
 OBJECTS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
 VPATH := $(SRCDIRS)
 

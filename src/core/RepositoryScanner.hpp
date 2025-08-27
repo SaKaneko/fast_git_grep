@@ -13,8 +13,8 @@ private:
   bool isWikiRepository(const std::string& path) const;
 
 public:
-  std::vector<SearchResult> scanAllRepositories(const std::string& pattern,
-                                                const std::vector<std::string>& excludeBranches);
+  std::vector<GrepResult> scanAllRepositories(const std::string& pattern,
+                                              const std::vector<std::string>& excludeBranches);
 
   // GITLAB_DATA_DIR配下のベアリポジトリパス一覧を取得
   std::vector<std::filesystem::path> listBareRepositories(const std::string& baseDir = "");
