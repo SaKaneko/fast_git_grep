@@ -10,7 +10,7 @@
 #include "core/RepositoryScanner.hpp"
 #include "core/ProjectFactory.hpp"
 #include "core/BranchSelector/BranchSelectorFactory.hpp"
-#include "core/ParallelSearchManager.hpp"
+#include "core/SearchManager/SearchManagerFactory.hpp"
 
 int main(int argc, char* argv[]) {
   util::ArgParser argParser(argc, argv);
@@ -53,8 +53,9 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  ParallelSearchManager search_manager;
-  auto results = search_manager.runParallelSearch(projects, "Getting started");
+  SearchManagerFactory search_manager_factory;
+  auto search_manager = search_manager_factory.create("parallel");
+  auto results        = search_manager->runSearch(projects, "Getting started");
   for (const auto& res : results) {
     std::cout << res.toString();
   }

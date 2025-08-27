@@ -9,6 +9,13 @@ namespace util {
 
 ProgressBar::ProgressBar(std::size_t total_, std::size_t width_) : total(total_), current(0), width(width_) {}
 
+void ProgressBar::initBar(std::size_t total_, std::size_t width_) {
+  total   = total_;
+  current = 0;
+  width   = width_;
+  draw();
+}
+
 // 進捗を更新（0 <= value <= total）
 void ProgressBar::update(std::size_t value) {
   if (value > total)

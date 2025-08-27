@@ -54,6 +54,8 @@
         "stop_token": "cpp",
         "thread": "cpp",
         "set": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp"
     }
 }
