@@ -1,0 +1,151 @@
+@startuml
+' クラス図: fast_git_grep
+
+' Config関連
+class Config {
+  - gitlabDataDir: string
+  - hashMapDBFile: string
+  - excludeBranchPatterns: vector<string>
+  - excludeProjectPatterns: vector<string>
+  - branchSelectorType: string
+  - searchManagerType: string
+  """
+  + setGitlabDataDir(string)
+  + setHashMapDBFile(string)
+  + setSearchManagerType(string)
+  + setBranchSelectorType(string)
+  + setExcludeBranchPatterns(vector<string>)
+  + setExcludeProjectPatterns(vector<string>)
+  + getGitlabDataDir(): string
+  + getHashMapDBFile(): string
+  + getSearchManagerType(): string
+  + getBranchSelectorType(): string
+  + getExcludeBranchPatterns(): vector<string>
+  + getExcludeProjectPatterns(): vector<string>
+}
+
+class ConfigLoader {
+  + loadConfig(filePath: string): Config
+  + loadConfigByIniFile(filePath: string): Config
+}
+
+' Project/リポジトリ関連
+class Project {
+  - target_branches: vector<string>
+  + path: string
+  + name: string
+  + setTargetBranches(vector<string>)
+  + getTargetBranches(): vector<string>
+  + isProjectExcluded(vector<string>): bool
+}
+
+class ProjectFactory {
+  - db_: void*
+  - gitlabDataPath: string
+  + createProjectFromDB(repository_path): Project
+}
+
+' Grep/検索関連
+class GrepResult {
+  + project_name: string
+  + branch: string
+  + line_contents: vector<string>
+  + toString(): string
+}
+
+class GitGrepExecutor {
+  + grep(project: Project, pattern: string): vector<GrepResult>
+}
+
+' 検索マネージャ
+class SearchManager {
+  # progress_bar: util::ProgressBar
+  + runSearch(projects: vector<Project>, pattern: string): vector<GrepResult>
+}
+
+class ParallelSearchManager {
+  + runSearch(projects: vector<Project>, pattern: string): vector<GrepResult>
+  + runParallelSearch(projects: vector<Project>, pattern: string): vector<GrepResult>
+}
+SearchManager <|-- ParallelSearchManager
+
+' BranchSelector関連
+class BranchSelector {
+  + selectBranch(project: Project, excludePatterns: vector<string>)
+  + getTargetBranches(project: Project, additionalOption: string): vector<string>
+  + excludeBranches(branches: vector<string>, excludePatterns: vector<string>): vector<string>
+}
+
+class MainBranchSelector {
+  + selectBranch(project: Project, excludePatterns: vector<string>)
+}
+class AllBranchSelector {
+  + selectBranch(project: Project, excludePatterns: vector<string>)
+}
+class LatestBranchSelector {
+  + selectBranch(project: Project, excludePatterns: vector<string>)
+}
+
+BranchSelector <|-- MainBranchSelector
+BranchSelector <|-- AllBranchSelector
+BranchSelector <|-- LatestBranchSelector
+
+class BranchSelectorFactory {
+  + create(strategy: string): BranchSelector
+}
+
+' util関連
+class util::ProgressBar {
+  - total: size_t
+  - current: size_t
+  - width: size_t
+  + ProgressBar(size_t, size_t)
+  + initBar(size_t, size_t)
+  + update(size_t)
+  + tick()
+}
+
+class util::ErrorManager {
+  + exitWithError(message: string, code: int)
+  + checkDirectoryReadable(path: string)
+  + checkSingleArgument(args: vector<string>)
+  + checkMinArgumentLength(args: vector<string>, minLength: size_t)
+}
+
+class RepositoryScanner {
+  + scanRepository(path: string): vector<Project>
+}
+
+class SearchManagerFactory {
+  + create(strategy: string): SearchManager
+}
+
+class SequentialSearchManager {
+  + runSearch(projects: vector<Project>, pattern: string): vector<GrepResult>
+}
+
+class ConfigConstants {
+  + getMinArgumentLength(): size_t
+}
+
+class util::ArgParser {
+  + parseArgs(argc: int, argv: char**): vector<string>
+}
+
+RepositoryScanner --> Project
+SearchManagerFactory --> SearchManager
+SearchManager <|-- SequentialSearchManager
+Config --> ConfigConstants
+util::ArgParser --> Config
+
+' 関連
+ConfigLoader --> Config
+ProjectFactory --> Project
+GitGrepExecutor --> GrepResult
+SearchManager --> util::ProgressBar
+ParallelSearchManager --> SearchManager
+SearchManager --> GrepResult
+BranchSelectorFactory --> BranchSelector
+BranchSelector --> Project
+Project --> GrepResult
+@enduml
