@@ -5,20 +5,18 @@
 
 namespace config {
 extern bool debug;
-extern std::vector<std::string> excluded_project_patterns;
-extern std::vector<std::string> excluded_branch_patterns;
 
-constexpr const char* APP_NAME = "fast_git_grep";
+const int MINIMAL_ARGUMENT_LENGTH = 3;
+constexpr const char* APP_NAME    = "fast_git_grep";
 
-constexpr const char* DEFAULT_CONFIG_FILE = "config.json";
-constexpr const char* DEFAULT_STRATEGY    = "main";
-constexpr const char* GITLAB_DATA_DIR     = "/home/ryngo/server/gitlab/data/git-data/repositories/@hashed";
-constexpr const char* PROJECT_NAME_DB     = "/home/ryngo/working/fast_bbbgrep/fast_git_grep/test/sample.db";
+constexpr const char* HELP_MESSAGE =
+    "Usage: fast_git_grep key [options]\n"
+    "Options:\n"
+    "  --branch_strategy <main|all|latest> Specify branch strategy (default: latest)\n"
+    "  --parallel_strategy <parallel|sequential> Specify parallel strategy (default: parallel)\n"
+    "  --excluded_projects <pattern>       Specify patterns to exclude projects by regex (default: ^obsoleted)\n"
+    "  --excluded_branches <pattern>       Specify patterns to exclude branches by regex (default: ^obsoleted)\n"
+    "  --debug                             Enable debug mode\n"
+    "  --help                              Show this help message\n";
 
-constexpr const char* HELP_MESSAGE = "Usage: fast_git_grep [options] <args>\n"
-                                     "Options:\n"
-                                     "  --config=<file>   Specify config file (default: config.json)\n"
-                                     "  --help            Show this help message\n";
-
-const std::set<std::string> ACCEPTABLE_STRATEGIES = {"all", "latest", "main"};
 } // namespace config

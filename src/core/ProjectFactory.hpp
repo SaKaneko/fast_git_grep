@@ -7,10 +7,11 @@
 
 class ProjectFactory {
 public:
-  ProjectFactory();
+  ProjectFactory(std::string gitlabDataPath, std::string db_path);
   ~ProjectFactory();
   Project createProjectFromDB(std::filesystem::path repository_path);
 
 private:
   void* db_; // sqlite3* の前方宣言（ヘッダでsqlite3.hに依存しないためvoid*）
+  std::string gitlabDataPath;
 };

@@ -1,4 +1,5 @@
 #include "config/ConfigLoader.hpp"
+#include "config/ConfigConstants.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -44,6 +45,52 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
 
     config[key] = value;
   }
+  Config cfg;
+  if (config.find("EXCLUDE_BRANCH_PATTERN") != config.end()) {
+    cfg.setExcludeBranchPatterns(parseMultipleArgs(config["EXCLUDE_BRANCH_PATTERN"]));
+  }
+  if (config.find("EXCLUDE_PROJECT_PATTERN") != config.end()) {
+    cfg.setExcludeProjectPatterns(parseMultipleArgs(config["EXCLUDE_PROJECT_PATTERN"]));
+  }
+  if (config.find("DEFAULT_BRANCH_SELECTOR_TYPE") != config.end()) {
+    cfg.setBranchSelectorType(config["DEFAULT_BRANCH_SELECTOR_TYPE"]);
+  }
+  if (config.find("DEFAULT_SEARCH_MANAGER_TYPE") != config.end()) {
+    cfg.setSearchManagerType(config["DEFAULT_SEARCH_MANAGER_TYPE"]);
+  }
+  if (config.find("GITLAB_DATA_DIR") != config.end()) {
+    cfg.setGitlabDataDir(config["GITLAB_DATA_DIR"]);
+  }
+  if (config.find("HASHMAP_DB_FILE") != config.end()) {
+    cfg.setHashMapDBFile(config["HASHMAP_DB_FILE"]);
+  }
 
-  return Config();
+  if (config::debug) {
+    std::cout << cfg.getBranchSelectorType() << std::endl;
+    for (auto pattern : cfg.getExcludeBranchPatterns()) {
+      std::cout << "  Exclude branch pattern: " << pattern << std::endl;
+    }
+    for (auto pattern : cfg.getExcludeProjectPatterns()) {
+      std::cout << "  Exclude project pattern: " << pattern << std::endl;
+    }
+    std::cout << "  GitLab data directory: " << cfg.getGitlabDataDir() << std::endl;
+    std::cout << "  HashMap DB file: " << cfg.getHashMapDBFile() << std::endl;
+    std::cout << "  Search manager type: " << cfg.getSearchManagerType() << std::endl;
+    std::cout << "  Branch selector type: " << cfg.getBranchSelectorType() << std::endl;
+  }
+
+  return cfg;
+}
+
+std::vector<std::string> ConfigLoader::parseMultipleArgs(const std::string& value) {
+  std::vector<std::string> result;
+  size_t start = 0;
+  size_t end   = value.find(',');
+  while (end != std::string::npos) {
+    result.push_back(value.substr(start, end - start));
+    start = end + 1;
+    end   = value.find(',', start);
+  }
+  result.push_back(value.substr(start));
+  return result;
 }

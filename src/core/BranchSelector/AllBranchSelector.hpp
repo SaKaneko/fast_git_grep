@@ -5,6 +5,5 @@
 
 class AllBranchSelector : public BranchSelector {
 public:
-  void selectBranch(Project& project) override;
-  std::vector<std::string> getTargetBranches(const Project& project);
+  void selectBranch(Project& project, const std::vector<std::string>& excludePatterns) override;
 };

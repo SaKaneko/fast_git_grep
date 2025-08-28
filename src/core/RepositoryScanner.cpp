@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 std::vector<fs::path> RepositoryScanner::listBareRepositories(const std::string& baseDir) {
   const int max_depth = 3; // 最大深さ
   std::vector<fs::path> repos;
-  std::string root = baseDir.empty() ? config::GITLAB_DATA_DIR : baseDir;
+  std::string root = baseDir;
   for (auto it = fs::recursive_directory_iterator(root); it != fs::recursive_directory_iterator(); ++it) {
     const auto& entry = *it;
     if (!entry.is_directory())

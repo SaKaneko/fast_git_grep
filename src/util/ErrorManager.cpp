@@ -1,4 +1,5 @@
 #include "util/ErrorManager.hpp"
+#include "config/ConfigConstants.hpp"
 #include <iostream>
 #include <cstdlib>  // exit
 #include <unistd.h> // access, R_OK
@@ -16,4 +17,17 @@ void ErrorManager::checkDirectoryReadable(const std::string& path) {
   }
 }
 
+void ErrorManager::checkSingleArgument(const std::vector<std::string>& args) {
+  if (args.size() != 1) {
+    std::cout << config::HELP_MESSAGE;
+    exitWithError("Single argument expected.", 2);
+  }
+}
+
+void ErrorManager::checkMinArgumentLength(const std::vector<std::string>& args, size_t minLength) {
+  if (args.empty() || args[0].length() < minLength) {
+    std::cout << config::HELP_MESSAGE;
+    exitWithError("Argument must be at least " + std::to_string(minLength) + " characters long.", 3);
+  }
+}
 } // namespace util

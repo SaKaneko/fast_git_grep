@@ -11,4 +11,5 @@ public:
   std::string name;
   void setTargetBranches(const std::vector<std::string>& branches);
   std::vector<std::string> getTargetBranches() const;
+  bool isProjectExcluded(const std::vector<std::string>& excludePatterns) const;
 };

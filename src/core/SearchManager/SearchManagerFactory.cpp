@@ -1,6 +1,7 @@
 #include "core/SearchManager/SearchManagerFactory.hpp"
 #include "core/SearchManager/SequentialSearchManager.hpp"
 #include "core/SearchManager/ParallelSearchManager.hpp"
+#include "util/ErrorManager.hpp"
 
 std::unique_ptr<SearchManager> SearchManagerFactory::create(const std::string& strategy) {
   if (strategy == "sequential") {
@@ -9,5 +10,7 @@ std::unique_ptr<SearchManager> SearchManagerFactory::create(const std::string& s
   else if (strategy == "parallel") {
     return std::make_unique<ParallelSearchManager>();
   }
-  return nullptr;
+  else {
+    util::ErrorManager::exitWithError("Unknown search manager strategy: " + strategy, 4);
+  }
 }
