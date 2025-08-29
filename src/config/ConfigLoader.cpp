@@ -64,6 +64,15 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
   if (config.find("HASHMAP_DB_FILE") != config.end()) {
     cfg.setHashMapDBFile(config["HASHMAP_DB_FILE"]);
   }
+  if (config.find("DB_TABLE_NAME") != config.end()) {
+    cfg.setDBTableName(config["DB_TABLE_NAME"]);
+  }
+  if (config.find("DB_INDEX_KEY") != config.end()) {
+    cfg.setDBIndexKey(config["DB_INDEX_KEY"]);
+  }
+  if (config.find("DB_VALUE_KEY") != config.end()) {
+    cfg.setDBValueKey(config["DB_VALUE_KEY"]);
+  }
 
   if (config::debug) {
     std::cout << cfg.getBranchSelectorType() << std::endl;
@@ -77,6 +86,9 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
     std::cout << "  HashMap DB file: " << cfg.getHashMapDBFile() << std::endl;
     std::cout << "  Search manager type: " << cfg.getSearchManagerType() << std::endl;
     std::cout << "  Branch selector type: " << cfg.getBranchSelectorType() << std::endl;
+    std::cout << "  DB Table Name: " << cfg.getDBTableName() << std::endl;
+    std::cout << "  DB Index Key: " << cfg.getDBIndexKey() << std::endl;
+    std::cout << "  DB Value Key: " << cfg.getDBValueKey() << std::endl;
   }
 
   return cfg;

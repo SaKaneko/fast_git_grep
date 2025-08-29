@@ -16,5 +16,6 @@ std::unique_ptr<BranchSelector> BranchSelectorFactory::create(const std::string&
   }
   else {
     util::ErrorManager::exitWithError("Unknown branch strategy: " + strategy, 4);
+    return nullptr;
   }
 }

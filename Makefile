@@ -11,7 +11,7 @@ VPATH := $(SRCDIRS)
 default: 
 	make build
 
-build: format
+build:
 	make $(TARGET)
 
 $(OBJDIR)/%.o: %.cpp
@@ -24,6 +24,24 @@ $(TARGET): $(OBJECTS)
 .PHONY: format
 format:
 	find bench include src test -name *.c -o -name *.cc -o -name *.cpp -o -name *.h -o -name *.hh -o -name *.hpp | xargs clang-format -i -style=file --verbose
+APPNAME = fast_git_grep
+SPECFILE = $(APPNAME).spec
+
+# RPM build settings
+RPMBUILD = rpmbuild
+RPMDIR = build
+
 .PHONY: clean
 clean:
-	rm -rf $(OBJDIR) $(TARGET)
+	rm -rf $(OBJDIR) $(TARGET) $(RPMDIR)
+	rm -rf ./*.rpm
+
+
+
+.PHONY: clean format rpm
+rpm: $(TARGET)
+	mkdir -p $(RPMDIR)/BUILD $(RPMDIR)/RPMS $(RPMDIR)/SOURCES $(RPMDIR)/SPECS $(RPMDIR)/SRPMS
+	git ls-files | tar --transform "s,^,$(APPNAME)-1.0/," -czf $(RPMDIR)/SOURCES/$(APPNAME)-1.0.tar.gz -T -
+	cp $(SPECFILE) $(RPMDIR)/SPECS/
+	$(RPMBUILD) --define "_topdir $(CURDIR)/$(RPMDIR)" -ba $(RPMDIR)/SPECS/$(SPECFILE)
+	cp $(RPMDIR)/RPMS/*/*.rpm ./

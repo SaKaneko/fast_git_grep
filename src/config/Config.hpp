@@ -12,6 +12,10 @@ private:
   std::string searchManagerType;
   std::vector<std::string> parseMultipleArgs(const std::string& value);
 
+  std::string dbTableName;
+  std::string dbIndexKey;
+  std::string dbValueKey;
+
 public:
   Config() {}
 
@@ -43,10 +47,25 @@ public:
     excludeProjectPatterns = parseMultipleArgs(patterns);
   }
 
+  void setDBTableName(const std::string& name) {
+    dbTableName = name;
+  }
+
+  void setDBIndexKey(const std::string& key) {
+    dbIndexKey = key;
+  }
+
+  void setDBValueKey(const std::string& key) {
+    dbValueKey = key;
+  }
+
   const std::string& getGitlabDataDir() const;
   const std::string& getHashMapDBFile() const;
   const std::string& getSearchManagerType() const;
   const std::string& getBranchSelectorType() const;
   const std::vector<std::string>& getExcludeBranchPatterns() const;
   const std::vector<std::string>& getExcludeProjectPatterns() const;
+  const std::string& getDBTableName() const;
+  const std::string& getDBIndexKey() const;
+  const std::string& getDBValueKey() const;
 };

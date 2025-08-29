@@ -24,6 +24,18 @@ const std::string& Config::getSearchManagerType() const {
   return searchManagerType;
 }
 
+const std::string& Config::getDBTableName() const {
+  return dbTableName;
+}
+
+const std::string& Config::getDBIndexKey() const {
+  return dbIndexKey;
+}
+
+const std::string& Config::getDBValueKey() const {
+  return dbValueKey;
+}
+
 std::vector<std::string> Config::parseMultipleArgs(const std::string& value) {
   std::vector<std::string> result;
   size_t start = 0;

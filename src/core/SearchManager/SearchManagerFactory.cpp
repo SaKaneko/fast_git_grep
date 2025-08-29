@@ -12,5 +12,6 @@ std::unique_ptr<SearchManager> SearchManagerFactory::create(const std::string& s
   }
   else {
     util::ErrorManager::exitWithError("Unknown search manager strategy: " + strategy, 4);
+    return nullptr;
   }
 }

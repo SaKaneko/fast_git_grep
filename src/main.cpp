@@ -57,7 +57,8 @@ int main(int argc, char* argv[]) {
     RepositoryScanner scanner;
     auto repos = scanner.listBareRepositories(config.getGitlabDataDir());
 
-    ProjectFactory projectFactory(config.getGitlabDataDir(), config.getHashMapDBFile());
+    ProjectFactory projectFactory(config.getGitlabDataDir(), config.getHashMapDBFile(), config.getDBTableName(),
+                                  config.getDBIndexKey(), config.getDBValueKey());
     for (const auto& repo : repos) {
       if (config::debug) {
         std::cout << "Found bare repository: " << repo.string() << std::endl;

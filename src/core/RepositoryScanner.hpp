@@ -3,7 +3,7 @@
 #include <vector>
 #include <filesystem>
 #include "core/Project.hpp"
-#include "core/ParallelSearchManager.hpp"
+#include "core/GrepResult.hpp"
 #include "config/ConfigLoader.hpp"
 
 class RepositoryScanner {

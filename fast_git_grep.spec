@@ -1,3 +1,4 @@
+%undefine _enable_debug_packages
 Name:           fast_git_grep
 Version:        1.0
 Release:        1%{?dist}
@@ -19,13 +20,18 @@ A fast grep utility using git grep for all projects in GitLab's @hashed reposito
 %build
 make
 
+
 %install
-mkdir -p %{buildroot}/usr/bin
-install -m 0755 fast_git_grep %{buildroot}/usr/bin/fast_git_grep
+mkdir -p %{buildroot}/usr/sbin
+mkdir -p %{buildroot}/etc/%{name}
+install -m 0755 fast_git_grep %{buildroot}/usr/sbin/fast_git_grep
+install -m 0644 etc/ini.config %{buildroot}/etc/%{name}/ini.config
+
 
 %files
-/usr/bin/fast_git_grep
+/usr/sbin/fast_git_grep
+/etc/%{name}/ini.config
 
 %changelog
-* Wed Aug 28 2025 Your Name <your.email@example.com> - 1.0-1
+* Fri Aug 29 2025 Your Name <your.email@example.com> - 1.0-1
 - Initial RPM release

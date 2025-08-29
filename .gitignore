@@ -1,3 +1,4 @@
 /obj
+/build
 fast_git_grep
 .vscode
