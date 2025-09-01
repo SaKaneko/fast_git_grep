@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "config/Config.hpp"
 
 namespace util {
 
@@ -13,10 +14,10 @@ public:
   static void checkDirectoryReadable(const std::string& path);
 
   // 引数がオプションを除き1つあることを確認し、そうでなければ異常終了
-  static void checkSingleArgument(const std::vector<std::string>& args);
+  static void checkSingleArgument(const std::vector<std::string>& args, const Config& config);
 
   // 引数がX文字以上であることを確認し、そうでなければ異常終了
-  static void checkMinArgumentLength(const std::vector<std::string>& args, size_t minLength);
+  static void checkMinArgumentLength(const std::vector<std::string>& args, size_t minLength, const Config& config);
 };
 
 } // namespace util

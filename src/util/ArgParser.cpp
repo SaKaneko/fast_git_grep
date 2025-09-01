@@ -36,6 +36,29 @@ void ArgParser::debugPrint() const {
 void ArgParser::parse(int argc, char* argv[]) {
   for (int i = 1; i < argc; ++i) {
     std::string token = argv[i];
+    // クォートで始まる場合
+    if ((token.front() == '"' && token.back() != '"') || (token.front() == '\'' && token.back() != '\'')) {
+      char quote = token.front();
+      std::string merged = token.substr(1); // 先頭クォート除去
+      while (++i < argc) {
+        std::string next = argv[i];
+        // 終端クォートが来るまで結合
+        if (!next.empty() && next.back() == quote) {
+          merged += " " + next.substr(0, next.size() - 1);
+          break;
+        } else {
+          merged += " " + next;
+        }
+      }
+      args.push_back(merged);
+      continue;
+    }
+    // クォートで囲まれている場合
+    if ((token.front() == '"' && token.back() == '"' && token.size() > 1) ||
+        (token.front() == '\'' && token.back() == '\'' && token.size() > 1)) {
+      args.push_back(token.substr(1, token.size() - 2));
+      continue;
+    }
     if (token.rfind("--", 0) == 0) {
       // --option または --option=value
       auto eqPos = token.find('=');

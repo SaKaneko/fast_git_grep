@@ -17,16 +17,17 @@ void ErrorManager::checkDirectoryReadable(const std::string& path) {
   }
 }
 
-void ErrorManager::checkSingleArgument(const std::vector<std::string>& args) {
+void ErrorManager::checkSingleArgument(const std::vector<std::string>& args, const Config& config) {
   if (args.size() != 1) {
-    std::cout << config::HELP_MESSAGE;
+    std::cout << config::makeHelpMessage(config) << std::endl;
     exitWithError("Single argument expected.", 2);
   }
 }
 
-void ErrorManager::checkMinArgumentLength(const std::vector<std::string>& args, size_t minLength) {
+void ErrorManager::checkMinArgumentLength(const std::vector<std::string>& args, size_t minLength,
+                                          const Config& config) {
   if (args.empty() || args[0].length() < minLength) {
-    std::cout << config::HELP_MESSAGE;
+    std::cout << config::makeHelpMessage(config) << std::endl;
     exitWithError("Argument must be at least " + std::to_string(minLength) + " characters long.", 3);
   }
 }
