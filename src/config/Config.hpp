@@ -15,6 +15,9 @@ private:
   std::string dbTableName;
   std::string dbIndexKey;
   std::string dbValueKey;
+  // cache
+  std::string cacheFilePath;
+  unsigned int cacheLifetimeSeconds = 300; // default 5 minutes
 
 public:
   Config() {}
@@ -59,6 +62,13 @@ public:
     dbValueKey = key;
   }
 
+  void setCacheFilePath(const std::string& path) {
+    cacheFilePath = path;
+  }
+  void setCacheLifetimeSeconds(unsigned int s) {
+    cacheLifetimeSeconds = s;
+  }
+
   const std::string& getGitlabDataDir() const;
   const std::string& getHashMapDBFile() const;
   const std::string& getSearchManagerType() const;
@@ -68,4 +78,6 @@ public:
   const std::string& getDBTableName() const;
   const std::string& getDBIndexKey() const;
   const std::string& getDBValueKey() const;
+  const std::string& getCacheFilePath() const;
+  unsigned int getCacheLifetimeSeconds() const;
 };
