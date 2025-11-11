@@ -73,6 +73,19 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
   if (config.find("DB_VALUE_KEY") != config.end()) {
     cfg.setDBValueKey(config["DB_VALUE_KEY"]);
   }
+  if (config.find("CACHE_FILE") != config.end()) {
+    cfg.setCacheFilePath(config["CACHE_FILE"]);
+  }
+  if (config.find("CACHE_LIFETIME_SECONDS") != config.end()) {
+    try {
+      unsigned int s = static_cast<unsigned int>(std::stoul(config["CACHE_LIFETIME_SECONDS"]));
+      cfg.setCacheLifetimeSeconds(s);
+    }
+    catch (...) {
+      // ignore parse errors, keep default
+      cfg.setCacheLifetimeSeconds(10800); // default 3 hours
+    }
+  }
 
   if (config::debug) {
     std::cout << cfg.getBranchSelectorType() << std::endl;
