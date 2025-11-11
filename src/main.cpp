@@ -12,27 +12,7 @@
 #include "core/ProjectFactory.hpp"
 #include "core/BranchSelector/BranchSelectorFactory.hpp"
 #include "core/SearchManager/SearchManagerFactory.hpp"
-
-std::string makeHelpMessage(const Config& config) {
-  std::ostringstream oss;
-  oss << "Usage: fast_git_grep key [options]\n";
-  oss << "Options:\n";
-  oss << "  --branch_strategy <main|all|latest> Specify branch strategy (default: " << config.getBranchSelectorType()
-      << ")\n";
-  oss << "  --parallel_strategy <parallel|sequential> Specify parallel strategy (default: "
-      << config.getSearchManagerType() << ")\n";
-  oss << "  --excluded_projects <pattern>       Specify patterns to exclude projects by regex (default: ";
-  if (!config.getExcludeProjectPatterns().empty())
-    oss << config.getExcludeProjectPatterns()[0];
-  oss << ")\n";
-  oss << "  --excluded_branches <pattern>       Specify patterns to exclude branches by regex (default: ";
-  if (!config.getExcludeBranchPatterns().empty())
-    oss << config.getExcludeBranchPatterns()[0];
-  oss << ")\n";
-  oss << "  --debug                             Enable debug mode\n";
-  oss << "  --help                              Show this help message\n";
-  return oss.str();
-}
+#include "core/ProjectCache.hpp"
 
 int main(int argc, char* argv[]) {
   util::ArgParser argParser(argc, argv);
@@ -74,22 +54,50 @@ int main(int argc, char* argv[]) {
   }
   auto key   = argParser.getArgs()[0];
   auto start = std::chrono::steady_clock::now();
-  // ベアリポジトリから探索対象のリポジトリを収集
   std::vector<Project> projects;
+  // キャッシュ利用: Config からパス/期限を取得してキャッシュが新しければ読み込む
   {
-    RepositoryScanner scanner;
-    auto repos = scanner.listBareRepositories(config.getGitlabDataDir());
+    std::filesystem::path cache_path;
+    if (!config.getCacheFilePath().empty()) {
+      cache_path = config.getCacheFilePath();
+    }
+    else {
+      // デフォルトは GitLab データディレクトリ直下の project_cache.bin
+      cache_path = std::filesystem::path(config.getGitlabDataDir()) / "project_cache.bin";
+    }
+    ProjectCache cache(cache_path, ProjectCache::seconds{static_cast<int>(config.getCacheLifetimeSeconds())});
+    bool ignore_cache = argParser.hasFlag("r") || argParser.hasFlag("nocache");
+    if (ignore_cache) {
+      if (config::debug)
+        std::cout << "Ignoring project cache due to CLI flag\n";
+    }
 
-    ProjectFactory projectFactory(config.getGitlabDataDir(), config.getHashMapDBFile(), config.getDBTableName(),
-                                  config.getDBIndexKey(), config.getDBValueKey());
-    for (const auto& repo : repos) {
-      if (config::debug) {
-        std::cout << "Found bare repository: " << repo.string() << std::endl;
+    if (!ignore_cache && cache.load(projects)) {
+      std::cout << "Loaded projects from cache: " << cache_path << std::endl;
+      std::cout << "If you want to rescan repositories, use -r or --nocache option." << std::endl;
+    }
+    else {
+      // ベアリポジトリから探索対象のリポジトリを収集
+      RepositoryScanner scanner;
+      auto repos = scanner.listBareRepositories(config.getGitlabDataDir());
+
+      ProjectFactory projectFactory(config.getGitlabDataDir(), config.getHashMapDBFile(), config.getDBTableName(),
+                                    config.getDBIndexKey(), config.getDBValueKey());
+      for (const auto& repo : repos) {
+        if (config::debug) {
+          std::cout << "Found bare repository: " << repo.string() << std::endl;
+        }
+        auto project = projectFactory.createProjectFromDB(repo);
+        if (project.isProjectExcluded(config.getExcludeProjectPatterns()))
+          continue;
+        projects.push_back(project);
       }
-      auto project = projectFactory.createProjectFromDB(repo);
-      if (project.isProjectExcluded(config.getExcludeProjectPatterns()))
-        continue;
-      projects.push_back(project);
+      // 保存を試みる（失敗しても処理継続）
+      if (!projects.empty()) {
+        if (!cache.save(projects) && config::debug) {
+          std::cerr << "Warning: failed to write project cache: " << cache_path << std::endl;
+        }
+      }
     }
   }
   auto point1 = std::chrono::steady_clock::now();

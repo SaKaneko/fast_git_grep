@@ -36,6 +36,14 @@ const std::string& Config::getDBValueKey() const {
   return dbValueKey;
 }
 
+const std::string& Config::getCacheFilePath() const {
+  return cacheFilePath;
+}
+
+unsigned int Config::getCacheLifetimeSeconds() const {
+  return cacheLifetimeSeconds;
+}
+
 std::vector<std::string> Config::parseMultipleArgs(const std::string& value) {
   std::vector<std::string> result;
   size_t start = 0;
