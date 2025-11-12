@@ -30,16 +30,17 @@ SPECFILE = $(APPNAME).spec
 # RPM build settings
 RPMBUILD = rpmbuild
 RPMDIR = build
+OBJDIR = obj
 
 .PHONY: clean
 clean:
-	rm -rf $(OBJDIR) $(TARGET) $(RPMDIR)
+	rm -rf $(OBJDIR) $(TARGET) $(RPMDIR) $(OBJDIR)
 	rm -rf ./*.rpm
 
 
 
 .PHONY: clean format rpm
-rpm: $(TARGET)
+rpm: clean $(TARGET)
 	mkdir -p $(RPMDIR)/BUILD $(RPMDIR)/RPMS $(RPMDIR)/SOURCES $(RPMDIR)/SPECS $(RPMDIR)/SRPMS
 	git ls-files | tar --transform "s,^,$(APPNAME)-1.0/," -czf $(RPMDIR)/SOURCES/$(APPNAME)-1.0.tar.gz -T -
 	cp $(SPECFILE) $(RPMDIR)/SPECS/

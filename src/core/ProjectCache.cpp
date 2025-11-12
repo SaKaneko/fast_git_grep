@@ -27,7 +27,7 @@ static bool readString(std::ifstream& ifs, std::string& out) {
   return true;
 }
 
-bool ProjectCache::save(const std::vector<Project>& projects) const {
+bool ProjectCache::save(const CacheObj& cache) const {
   try {
     // ensure parent directory exists
     if (cache_file_.has_parent_path()) {
@@ -46,9 +46,17 @@ bool ProjectCache::save(const std::vector<Project>& projects) const {
     uint32_t ver = ProjectCache::FILE_VERSION;
     ofs.write(reinterpret_cast<const char*>(&ver), sizeof(ver));
 
-    uint64_t count = projects.size();
+    // write branch selector type and exclude branch patterns
+    writeString(ofs, cache.branchSelectorType);
+    uint64_t ex_count = cache.excludeBranchPatterns.size();
+    ofs.write(reinterpret_cast<const char*>(&ex_count), sizeof(ex_count));
+    for (const auto& p : cache.excludeBranchPatterns) {
+      writeString(ofs, p);
+    }
+
+    uint64_t count = cache.projects.size();
     ofs.write(reinterpret_cast<const char*>(&count), sizeof(count));
-    for (const auto& p : projects) {
+    for (const auto& p : cache.projects) {
       writeString(ofs, p.path);
       writeString(ofs, p.name);
       auto branches   = p.getTargetBranches();
@@ -75,8 +83,7 @@ bool ProjectCache::save(const std::vector<Project>& projects) const {
   }
 }
 
-bool ProjectCache::load(std::vector<Project>& out) const {
-  out.clear();
+bool ProjectCache::load(CacheObj& out) const {
   if (!isFresh())
     return false;
   try {
@@ -97,11 +104,27 @@ bool ProjectCache::load(std::vector<Project>& out) const {
     if (ver != ProjectCache::FILE_VERSION)
       return false;
 
+    // read branch selector type and exclude patterns
+    std::string bsel;
+    if (!readString(ifs, bsel))
+      return false;
+    out.branchSelectorType = std::move(bsel);
+    uint64_t ex_count      = 0;
+    ifs.read(reinterpret_cast<char*>(&ex_count), sizeof(ex_count));
+    if (!ifs)
+      return false;
+    for (uint64_t i = 0; i < ex_count; ++i) {
+      std::string pat;
+      if (!readString(ifs, pat))
+        return false;
+      out.excludeBranchPatterns.push_back(std::move(pat));
+    }
+
     uint64_t count = 0;
     ifs.read(reinterpret_cast<char*>(&count), sizeof(count));
     if (!ifs)
       return false;
-    out.reserve(static_cast<size_t>(count));
+    out.projects.reserve(static_cast<size_t>(count));
     for (uint64_t i = 0; i < count; ++i) {
       std::string path, name;
       if (!readString(ifs, path))
@@ -124,7 +147,7 @@ bool ProjectCache::load(std::vector<Project>& out) const {
       p.path = path;
       p.name = name;
       p.setTargetBranches(branches);
-      out.push_back(std::move(p));
+      out.projects.push_back(std::move(p));
     }
     return true;
   }
