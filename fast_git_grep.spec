@@ -1,6 +1,6 @@
 %undefine _enable_debug_packages
 Name:           fast_git_grep
-Version:        1.0
+Version:        1.0.2
 Release:        1%{?dist}
 Summary:        Fast git grep utility for GitLab hashed repositories
 
@@ -35,3 +35,6 @@ install -m 0644 etc/ini.config %{buildroot}/etc/%{name}/ini.config
 %changelog
 * Fri Aug 29 2025 Your Name <your.email@example.com> - 1.0-1
 - Initial RPM release
+
+* Wed Nov 12 2025 Satoshi Kaneko <secret@example.com> - 1.0.2
+- Add Project Cache 

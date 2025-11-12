@@ -3,6 +3,7 @@ CXXFLAGS = -std=c++17 -Wall -O2 -Isrc -lsqlite3
 SRCDIRS = src/core/SearchManager src/core/BranchSelector src/core src/config src/util src
 OBJDIR = obj
 TARGET = fast_git_grep
+VERSION = 1.0.2
 
 SOURCES := $(foreach dir,$(SRCDIRS),$(wildcard $(dir)/*.cpp))
 OBJECTS := $(patsubst %.cpp,$(OBJDIR)/%.o,$(notdir $(SOURCES)))
@@ -42,7 +43,7 @@ clean:
 .PHONY: clean format rpm
 rpm: clean $(TARGET)
 	mkdir -p $(RPMDIR)/BUILD $(RPMDIR)/RPMS $(RPMDIR)/SOURCES $(RPMDIR)/SPECS $(RPMDIR)/SRPMS
-	git ls-files | tar --transform "s,^,$(APPNAME)-1.0/," -czf $(RPMDIR)/SOURCES/$(APPNAME)-1.0.tar.gz -T -
+	git ls-files | tar --transform "s,^,$(APPNAME)-$(VERSION)/," -czf $(RPMDIR)/SOURCES/$(APPNAME)-$(VERSION).tar.gz -T -
 	cp $(SPECFILE) $(RPMDIR)/SPECS/
 	$(RPMBUILD) --define "_topdir $(CURDIR)/$(RPMDIR)" -ba $(RPMDIR)/SPECS/$(SPECFILE)
 	cp $(RPMDIR)/RPMS/*/*.rpm ./
