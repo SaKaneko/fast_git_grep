@@ -86,6 +86,9 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
       cfg.setCacheLifetimeSeconds(10800); // default 3 hours
     }
   }
+  if (config.find("BASE_URL") != config.end()) {
+    cfg.setBaseUrl(config["BASE_URL"]);
+  }
 
   if (config::debug) {
     std::cout << cfg.getBranchSelectorType() << std::endl;
@@ -102,6 +105,9 @@ Config ConfigLoader::loadConfigByIniFile(const std::string& filePath) {
     std::cout << "  DB Table Name: " << cfg.getDBTableName() << std::endl;
     std::cout << "  DB Index Key: " << cfg.getDBIndexKey() << std::endl;
     std::cout << "  DB Value Key: " << cfg.getDBValueKey() << std::endl;
+    std::cout << "  Cache File Path: " << cfg.getCacheFilePath() << std::endl;
+    std::cout << "  Cache Lifetime Seconds: " << cfg.getCacheLifetimeSeconds() << std::endl;
+    std::cout << "  Base URL: " << cfg.getBaseUrl() << std::endl;
   }
 
   return cfg;

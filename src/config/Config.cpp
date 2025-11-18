@@ -44,6 +44,10 @@ unsigned int Config::getCacheLifetimeSeconds() const {
   return cacheLifetimeSeconds;
 }
 
+const std::string& Config::getBaseUrl() const {
+  return baseUrl;
+}
+
 std::vector<std::string> Config::parseMultipleArgs(const std::string& value) {
   std::vector<std::string> result;
   size_t start = 0;

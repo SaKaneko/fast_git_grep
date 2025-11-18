@@ -18,6 +18,8 @@ private:
   // cache
   std::string cacheFilePath;
   unsigned int cacheLifetimeSeconds = 300; // default 5 minutes
+  // output
+  std::string baseUrl;
 
 public:
   Config() {}
@@ -69,6 +71,10 @@ public:
     cacheLifetimeSeconds = s;
   }
 
+  void setBaseUrl(const std::string& url) {
+    baseUrl = url;
+  }
+
   const std::string& getGitlabDataDir() const;
   const std::string& getHashMapDBFile() const;
   const std::string& getSearchManagerType() const;
@@ -79,5 +85,6 @@ public:
   const std::string& getDBIndexKey() const;
   const std::string& getDBValueKey() const;
   const std::string& getCacheFilePath() const;
+  const std::string& getBaseUrl() const;
   unsigned int getCacheLifetimeSeconds() const;
 };

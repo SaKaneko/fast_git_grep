@@ -142,7 +142,7 @@ int main(int argc, char* argv[]) {
   double point2_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - point1).count() / 1000.0;
   std::cout << "runSearch elapsed: " << point2_elapsed << " sec" << std::endl;
   for (const auto& res : results) {
-    std::cout << res.toString();
+    std::cout << res.toString(config.getBaseUrl());
   }
   return 0;
 }
